@@ -18,11 +18,15 @@ jobs:
         with:
           submodules: recursive
 
+    
       - name: Install dependencies
         run: |
-          brew install ldid cocoapods
+          brew install ldid
+          command -v pod
+          pod --version
           git clone --recursive --depth 1 \
             https://github.com/theos/theos.git "$HOME/theos"
+
 
       - name: Build packages
         run: |
