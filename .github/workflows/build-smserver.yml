@@ -1,0 +1,37 @@
+
+name: Build SMServer Rootless
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build iOS 15 Rootless
+    runs-on: macos-15-intel
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          brew install ldid cocoapods
+          git clone --recursive --depth 1 \
+            https://github.com/theos/theos.git "$HOME/theos"
+
+      - name: Build packages
+        run: |
+          chmod +x package/build-rootless.sh
+          ./package/build-rootless.sh
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: SMServer-Rootless
+          path: package/out/*.deb
+          if-no-files-found: error
